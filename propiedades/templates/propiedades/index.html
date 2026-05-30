@@ -1,0 +1,366 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TocaCasa - Inmobiliaria Tocancipá</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+         :root {
+            --primary: #0f172a;
+            /* Azul Marino Profundo */
+            --accent: #00d2ff;
+            /* Cian */
+            --success: #27ae60;
+            /* Verde */
+            --slate-300: #cbd5e1;
+        }
+        /* --- CONFIGURACIÓN DEL FONDO MEJORADO --- */
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+            background-attachment: fixed;
+            color: var(--primary);
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        /* Capa de textura de rejilla de ingeniería */
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2394a3b8' fill-opacity='0.15' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+        /* Navbar Glassmorphism */
+        
+        .navbar {
+            background: rgba(15, 23, 42, 0.9) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+        }
+        /* Hero Section con bordes redondeados */
+        
+        .hero-section {
+            height: 65vh;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 60px;
+            border-bottom-right-radius: 60px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-title {
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            /* Corregido para VS Code */
+            -webkit-text-fill-color: transparent;
+            font-size: 4.5rem;
+        }
+        /* Buscador Flotante */
+        
+        .search-container {
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .search-wrapper {
+            background: white;
+            border-radius: 30px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .search-wrapper input {
+            border: none;
+            outline: none;
+            padding-left: 20px;
+            font-size: 1.1rem;
+            background: transparent;
+        }
+        /* Tarjetas Estilo Premium */
+        
+        .card-property {
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white;
+            overflow: hidden;
+        }
+        
+        .card-property:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.2);
+            border-color: var(--accent);
+        }
+        
+        .img-wrapper {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+            margin: 10px;
+            border-radius: 20px;
+        }
+        
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.6s;
+        }
+        
+        .card-property:hover .img-wrapper img {
+            transform: scale(1.1);
+        }
+        
+        .precio-tag {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.7rem;
+            letter-spacing: -1px;
+        }
+        
+        .badge-custom {
+            position: absolute;
+            top: 15px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        /* --- FOOTER MODERNO --- */
+        
+        .main-footer {
+            background-color: var(--primary);
+            color: #f8fafc;
+            padding: 70px 0 30px;
+            margin-top: 100px;
+            border-top: 5px solid var(--accent);
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .footer-link:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+        
+        .social-icons a {
+            font-size: 1.4rem;
+            margin-right: 20px;
+            color: #f8fafc;
+            transition: 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--accent);
+            transform: translateY(-5px);
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="/"><i class="fa-solid fa-house-circle-check text-info me-2"></i>TocaCasa</a>
+            <div class="ms-auto d-flex gap-2">
+                {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-info rounded-pill px-4 fw-bold"><i class="fa-solid fa-chart-simple me-1"></i>PANEL</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light rounded-pill px-3"><i class="fa-solid fa-right-from-bracket"></i></a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-info rounded-pill px-4 fw-bold">ACCESO AGENTE</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <h1 class="hero-title mb-2">BUSCA TU FUTURO</h1>
+            <p class="fs-4 fw-light opacity-75">Propiedades exclusivas en Tocancipá y alrededores.</p>
+        </div>
+    </header>
+
+    <div class="container search-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form method="GET" action="." class="search-wrapper">
+                    <input type="text" name="q" class="form-control flex-grow-1" placeholder="¿En qué sector buscas? (Ej: Verganzo, Centro...)" value="{{ request.GET.q }}">
+                    <button class="btn btn-dark rounded-pill px-5 fw-bold" type="submit">BUSCAR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <main class="container py-5 mt-4">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <h6 class="text-info fw-bold text-uppercase mb-1">Listado Maestro</h6>
+                <h2 class="fw-bold fs-1 m-0 text-dark">Propiedades Destacadas</h2>
+            </div>
+            {% if request.GET.q %}
+            <a href="." class="btn btn-light rounded-pill border shadow-sm px-4">Ver Todo</a> {% endif %}
+        </div>
+
+        <div class="row">
+            {% for p in propiedades %}
+            <div class="col-md-6 col-lg-4 mb-5">
+                <div class="card card-property h-100 shadow-sm">
+                    <div class="img-wrapper">
+                        <span class="badge-custom bg-success shadow" style="left: 15px;">{{ p.tipo_negocio }}</span>
+                        <span class="badge-custom bg-info shadow" style="right: 15px;">{{ p.zona }}</span>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'toggle_favorito' p.id %}" class="badge-custom shadow" style="top: 15px; right: 15px; background: white; color: #dc2626; text-decoration: none;">
+                            <i class="fa{% if p.id in favoritos_ids %}s{% else %}r{% endif %} fa-heart"></i>
+                        </a>
+                        {% endif %}
+                        {% if p.imagen %}
+                        <img src="{{ p.imagen.url }}" alt="{{ p.titulo }}"> {% else %}
+                        <img src="https://via.placeholder.com/400x250?text=TocaCasa" alt="Sin imagen"> {% endif %}
+                    </div>
+
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-1 text-truncate">{{ p.titulo }}</h5>
+                        <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ p.ubicacion_especifica|default:"Tocancipá, Cund." }}</p>
+
+                        <p class="precio-tag mb-4">${{ p.valor_inmueble|intcomma }}</p>
+
+                        <div class="d-grid gap-2">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'iniciar_conversacion' p.id %}" class="btn btn-info py-2 rounded-pill fw-bold shadow">
+                                <i class="fa-regular fa-comment me-2"></i>ESTOY INTERESADO
+                            </a>
+                            {% endif %}
+                            <button class="btn btn-dark py-2 rounded-pill fw-bold shadow" data-bs-toggle="modal" data-bs-target="#modalNegocio{{ p.id }}">
+                                <i class="fa-solid fa-calculator me-2"></i>COTIZAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalNegocio{{ p.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 rounded-5">
+                        <div class="modal-header bg-dark text-white p-4">
+                            <h5 class="modal-title fw-bold">Cálculo de Inversión</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4 text-dark">
+                            <h4 class="fw-bold mb-4">{{ p.titulo }}</h4>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Precio Base:</span>
+                                <span class="fw-bold">${{ p.valor_inmueble|intcomma }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 text-info">
+                                <span>Comisión Sugerida:</span>
+                                <span class="fw-bold">+ ${{ p.calcular_comision|intcomma }}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fs-3 fw-bold text-success">
+                                <span>TOTAL:</span>
+                                <span>${{ p.total_con_comision|intcomma }}</span>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 p-4">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'iniciar_conversacion' p.id %}?visita=1" class="btn btn-primary w-100 py-3 rounded-pill fw-bold"><i class="fa-regular fa-calendar me-2"></i>SOLICITAR VISITA</a>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={% url 'iniciar_conversacion' p.id %}?visita=1" class="btn btn-primary w-100 py-3 rounded-pill fw-bold"><i class="fa-regular fa-calendar me-2"></i>SOLICITAR VISITA</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-folder-open fa-3x text-muted mb-3"></i>
+                <p class="fs-4 text-muted">No encontramos resultados para esta búsqueda.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="fw-bold mb-3 text-info">🏠 TocaCasa</h4>
+                    <p class="text-slate-300 opacity-75">Soluciones inmobiliarias inteligentes para la sabana de Bogotá. Innovación y confianza en cada transacción.</p>
+                    <div class="social-icons mt-4">
+                        <a href="https://www.facebook.com"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6 mb-4">
+                    <h6 class="fw-bold text-uppercase mb-3 small">Empresa</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="footer-link">Inicio</a></li>
+                        <li><a href="/admin" class="footer-link">Acceso Agentes</a></li>
+                        <li><a href="#" class="footer-link">Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-6 mb-4">
+                    <h6 class="fw-bold text-uppercase mb-3 small">Sectores Populares</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="?q=Verganzo" class="footer-link">Verganzo</a></li>
+                        <li><a href="?q=Centro" class="footer-link">Centro Histórico</a></li>
+                        <li><a href="?q=La Fuente" class="footer-link">La Fuente</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6 class="fw-bold text-uppercase mb-3 small">Soporte Técnico</h6>
+                    <p class="text-slate-300 small mb-1"><i class="fa-solid fa-envelope me-2"></i>danijko123jesus@gmail.com</p>
+                    <p class="text-slate-300 small"><i class="fa-solid fa-graduation-cap me-2"></i> Proyecto inmobiliario tocancipa</p>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary opacity-25">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small text-muted mb-0">© 2026 TocaCasa. Diseñado para la Sabana de Bogotá.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="small text-muted mb-0">Tocancipá - Colombia</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

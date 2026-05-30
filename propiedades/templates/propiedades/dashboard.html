@@ -1,0 +1,288 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TocaCasa - Panel {{ rol }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0f172a; --accent: #00d2ff; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: var(--primary);
+            min-height: 100vh;
+            width: 260px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+        }
+        .sidebar .brand { font-size: 1.5rem; font-weight: 800; color: white; }
+        .sidebar .nav-link {
+            color: #94a3b8;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+        .main-content { margin-left: 260px; padding: 2rem; }
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .badge-rol {
+            background: rgba(0,210,255,0.15);
+            color: #0891b2;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .card-property {
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.3s;
+            background: white;
+        }
+        .card-property:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar d-none d-md-flex flex-column">
+        <div class="mb-5">
+            <i class="fa-solid fa-house-circle-check text-info me-2"></i>
+            <span class="brand">TocaCasa</span>
+        </div>
+        <nav class="nav flex-column">
+            <a href="{% url 'dashboard' %}" class="nav-link active"><i class="fa-solid fa-chart-simple me-2"></i>Dashboard</a>
+            <a href="{% url 'mis_conversaciones' %}" class="nav-link"><i class="fa-regular fa-comments me-2"></i>Conversaciones</a>
+            {% if rol == 'SuperAdmin' or rol == 'Admin' %}
+            <a href="/admin/" class="nav-link"><i class="fa-solid fa-gear me-2"></i>Admin</a>
+            {% endif %}
+            <a href="{% url 'index' %}" class="nav-link"><i class="fa-solid fa-building me-2"></i>Ver Sitio</a>
+            <a href="{% url 'logout' %}" class="nav-link mt-5 text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión</a>
+        </nav>
+    </div>
+
+    <!-- Main -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Bienvenido, {{ user.nombre }}</h2>
+                <span class="badge-rol"><i class="fa-solid fa-user-tag me-1"></i>{{ rol }}</span>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'index' %}" class="btn btn-outline-dark rounded-pill px-4"><i class="fa-solid fa-eye me-1"></i>Ver Sitio</a>
+                <a href="{% url 'logout' %}" class="btn btn-dark rounded-pill px-4"><i class="fa-solid fa-right-from-bracket me-1"></i>Salir</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-0 small">Total Propiedades</p>
+                            <h3 class="fw-bold mb-0">{{ total }}</h3>
+                        </div>
+                        <i class="fa-solid fa-building fa-2x text-info opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-0 small">En Venta</p>
+                            <h3 class="fw-bold mb-0">{{ en_venta }}</h3>
+                        </div>
+                        <i class="fa-solid fa-tag fa-2x text-success opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-0 small">En Arriendo</p>
+                            <h3 class="fw-bold mb-0">{{ en_arriendo }}</h3>
+                        </div>
+                        <i class="fa-solid fa-handshake fa-2x text-warning opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if rol == 'Cliente' %}
+        <!-- ======= SECCIONES PARA CLIENTES ======= -->
+
+        <!-- Publicar propiedad -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold section-title mb-0"><i class="fa-solid fa-list me-2"></i>Mis Propiedades</h4>
+            <a href="{% url 'agregar_propiedad' %}" class="btn btn-dark rounded-pill px-4">
+                <i class="fa-solid fa-plus me-1"></i>Publicar
+            </a>
+        </div>
+        <div class="row g-4 mb-5">
+            {% for p in propiedades %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-property">
+                    {% if p.imagen %}
+                    <img src="{{ p.imagen.url }}" class="w-100" style="height: 160px; object-fit: cover;" alt="{{ p.titulo }}">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                        <i class="fa-solid fa-image fa-3x text-muted opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h6 class="fw-bold mb-0 text-truncate">{{ p.titulo }}</h6>
+                            <a href="{% url 'editar_propiedad' p.id %}" class="text-muted small"><i class="fa-solid fa-pen"></i></a>
+                        </div>
+                        <p class="text-muted small mb-1">{{ p.ubicacion_especifica|default:"Tocancipá" }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${{ p.valor_inmueble|intcomma }}</span>
+                            <span class="badge bg-dark">{{ p.tipo_negocio }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-plus-circle fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Aún no has publicado propiedades.</p>
+                <a href="{% url 'agregar_propiedad' %}" class="btn btn-dark rounded-pill px-4">Publicar mi primera propiedad</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Favoritos -->
+        <h4 class="fw-bold section-title mb-3"><i class="fa-solid fa-heart text-danger me-2"></i>Mis Favoritos</h4>
+        <div class="row g-4 mb-5">
+            {% for fav in favoritos %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-property">
+                    {% if fav.inmueble.imagen %}
+                    <img src="{{ fav.inmueble.imagen.url }}" class="w-100" style="height: 160px; object-fit: cover;" alt="{{ fav.inmueble.titulo }}">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                        <i class="fa-solid fa-image fa-3x text-muted opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h6 class="fw-bold mb-1 text-truncate">{{ fav.inmueble.titulo }}</h6>
+                        <p class="text-muted small mb-1">{{ fav.inmueble.ubicacion_especifica|default:"Tocancipá" }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${{ fav.inmueble.valor_inmueble|intcomma }}</span>
+                            <a href="{% url 'toggle_favorito' fav.inmueble.id %}" class="btn btn-sm btn-outline-danger rounded-pill">
+                                <i class="fa-solid fa-heart-broken"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-4">
+                <i class="fa-regular fa-heart fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No tienes favoritos aún. Explora propiedades y marca tus favoritas.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Conversaciones -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold section-title mb-0"><i class="fa-regular fa-comments me-2"></i>Mis Conversaciones</h4>
+            <a href="{% url 'mis_conversaciones' %}" class="btn btn-sm btn-outline-dark rounded-pill">Ver todas</a>
+        </div>
+        {% for c in conversaciones %}
+        <a href="{% url 'conversacion_detalle' c.id %}" class="text-decoration-none text-dark">
+            <div class="d-flex justify-content-between align-items-center p-3 mb-2 bg-white rounded-4 border shadow-sm" style="transition: 0.3s;">
+                <div>
+                    <h6 class="fw-bold mb-0 small">{{ c.inmueble.titulo }}</h6>
+                    <p class="text-muted small mb-0">{{ c.cliente.nombre }} · {{ c.get_estado_display }}</p>
+                </div>
+                <span class="badge bg-dark">{{ c.mensajes.count }} msj</span>
+            </div>
+        </a>
+        {% empty %}
+        <p class="text-muted small mb-4">No hay conversaciones activas.</p>
+        {% endfor %}
+
+        <!-- Historial de búsquedas -->
+        <h4 class="fw-bold section-title mb-3"><i class="fa-solid fa-clock-rotate-left text-info me-2"></i>Búsquedas Recientes</h4>
+        <div class="mb-4">
+            {% if busquedas %}
+            <div class="d-flex flex-wrap gap-2">
+                {% for b in busquedas %}
+                <a href="{% url 'index' %}?q={{ b.query|urlencode }}" class="btn btn-light rounded-pill border shadow-sm">
+                    <i class="fa-solid fa-search me-1"></i>{{ b.query }}
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted small">Aún no has realizado búsquedas.</p>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <!-- ======= VISTA PARA ADMIN / SUPERADMIN ======= -->
+        <h4 class="fw-bold mb-3"><i class="fa-solid fa-list me-2"></i>Todas las Propiedades</h4>
+        <div class="row g-4">
+            {% for p in propiedades %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-property">
+                    {% if p.imagen %}
+                    <img src="{{ p.imagen.url }}" class="w-100" style="height: 180px; object-fit: cover;" alt="{{ p.titulo }}">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                        <i class="fa-solid fa-image fa-3x text-muted opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h6 class="fw-bold mb-1 text-truncate">{{ p.titulo }}</h6>
+                        <p class="text-muted small mb-1">{{ p.ubicacion_especifica|default:"Tocancipá" }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${{ p.valor_inmueble|intcomma }}</span>
+                            <span class="badge bg-dark">{{ p.tipo_negocio }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-folder-open fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No hay propiedades registradas.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
