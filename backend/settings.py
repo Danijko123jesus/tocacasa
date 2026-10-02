@@ -43,6 +43,12 @@ INSTALLED_APPS = [
     'propiedades',
 ]
 
+# Backend de autenticación personalizado para modelo Usuarios
+AUTHENTICATION_BACKENDS = [
+    'propiedades.auth_backend.UsuariosAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -72,12 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-
-# Backend de autenticación personalizado para modelo Usuarios
-AUTHENTICATION_BACKENDS = [
-    'propiedades.auth_backend.UsuariosAuthBackend',
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 
 # Database
@@ -148,8 +148,9 @@ JAZZMIN_SETTINGS = {
     "copyright": "TocaCasa - Tocancipá",
     "search_model": ["propiedades.Inmuebles", "propiedades.Usuarios"],
     "topmenu_links": [
+        {"name": "🏠 Inicio", "url": "/", "new_window": True},
+        {"name": "📊 Panel", "url": "/dashboard/", "new_window": False},
         {"name": "Ver Sitio", "url": "/", "new_window": True},
-        {"name": "Dashboard", "url": "/dashboard/", "new_window": False},
     ],
     "show_sidebar": True,
     "navigation_expanded": True,
